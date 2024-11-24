@@ -1,0 +1,133 @@
+/* Styling for the entire body */
+body {
+    background-color: #101010; /* Dark background for a cinematic feel */
+    color: #fff; /* White text for high contrast */
+    font-family: 'Arial', sans-serif; /* General font */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+/* Styling for the header */
+h1 {
+    font-family: 'Impact', sans-serif; /* Bold blockbuster font */
+    font-size: 2.5rem;
+    color: #ffa900; /* Bright yellow color for the title */
+    margin-bottom: 30px;
+    text-transform: uppercase; /* Make it bold and dramatic */
+    letter-spacing: 2px;
+}
+
+
+/* Container holding search bar and buttons */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Stylish search bar */
+#searchbar {
+    width: 350px;
+    padding: 15px 20px;
+    font-size: 18px;
+    border: 3px solid #ffa900; /* Yellow border to match the blockbuster theme */
+    border-radius: 30px;
+    outline: none;
+    background-color: #333; /* Dark background for input field */
+    color: #fff; /* White text in the input */
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 12px rgba(255, 221, 0, 0.4); /* Glowing yellow shadow */
+}
+
+/* Placeholder style */
+#searchbar::placeholder {
+    color: #ccc; /* Light grey color for placeholder text */
+    font-style: italic;
+}
+
+/* Focus state */
+#searchbar:focus {
+    border-color: #ffa900; /* Glowing yellow when focused */
+    box-shadow: 0px 6px 14px rgba(255, 221, 0, 0.6); /* Glowing yellow effect */
+    transform: scale(1.05); /* Slight enlargement */
+}
+
+/* Add animation for focus */
+#searchbar:focus::placeholder {
+    color: #aaa; /* Lighter placeholder color on focus */
+}
+
+/* Style for search button */
+button {
+    background-color: #ffa900; /* Bright yellow background */
+    color: #101010; /* Dark text color */
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect for buttons */
+button:hover {
+    background-color: #FF6600; /* Orange color when hovered */
+    transform: scale(1.05); /* Slightly enlarging effect */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Style for the random movie button */
+button.randomMovie {
+    background-color: #0d3fa9; /* Cool blue for the random movie button */
+    color: #101010; /* Dark text for contrast */
+}
+
+button.randomMovie:hover {
+    background-color: #00BFFF; /* Lighter blue for hover effect */
+}
+
+/* Add animation to the container */
+.container {
+    animation: fadeIn 1s ease-in-out; /* Fade-in animation for the search bar */
+}
+
+/* Keyframes for fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ------------------------------ Container for den nye paragraf (p-tag) der laves-------------------------------*/
+.output-container {
+    max-height: 500px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: #333;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+
+.output-container .generated-paragraph {
+    font-family: sans-serif;;
+    font-size: 16px;
+    color: #fff;;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
