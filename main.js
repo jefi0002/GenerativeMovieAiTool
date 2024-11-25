@@ -1,52 +1,49 @@
 console.log('Thank you for using WebStorm 💙');
 
-function resetApiKey() {
-    localStorage.removeItem("OPENAI_API_KEY");
-    OPENAI_API_KEY = prompt("Put in new API key:");
-    if (OPENAI_API_KEY) {
-        localStorage.setItem("OPENAI_API_KEY", OPENAI_API_KEY);
-        console.log("API key updated successfully.");
+let OPENAI_API_KEY = null;
+
+// ----------------------Reset API key immediately when the page loads-----------------//
+function requestApiKey() {
+    OPENAI_API_KEY = prompt("Enter your API key:");
+    if (!OPENAI_API_KEY) {
+        console.error("API key not provided! Reload the page to try again.");
     } else {
-        console.error("API key not provided!");
+        console.log("API key set for this session.");
     }
 }
 
+// ------------------------ Call function on page reload ---------------------------------///
+requestApiKey();
 
-// Check if the API key is already stored
-let OPENAI_API_KEY = localStorage.getItem("OPENAI_API_KEY");
+//------------------------------- Container and button const --------------------------------------//
+const outputContainer = document.querySelector(".output-container");
+const randomMovieButton = document.querySelector(".randomMovie");
+const searchMovieButton = document.querySelector(".searchMovie"); // Correctly selected the searchMovie button
 
-if (!OPENAI_API_KEY) {
-    // If not found, prompt the user to input the API key
-    OPENAI_API_KEY = prompt("Put in API key:");
-    if (OPENAI_API_KEY) {
-        localStorage.setItem("OPENAI_API_KEY", OPENAI_API_KEY);
-    } else {
-        console.error("API key not provided!");
-    }
-} else {
-    console.log("API key loaded from localStorage.");
-}
-
-console.log("Your API key is:", OPENAI_API_KEY);
-
-
-// Få inpout fra search
+//-------------------------------------- Random movie function --------------------------------------//
 function randomSuggestion() {
     const randomMovie = document.querySelector(".button"); // Get the button element (or another element you want)
     if (randomMovie) {
         const randomMovieText = randomMovie.textContent;  // Get text of the button
         fetchSuggestion(`${randomMovieText} Generate a random Movie and the camera that is used to film it`);
     } else {
-        console.error("Random movie button not found");
+        console.error("The Random movie button not found");
     }
 }
 
-const outputContainer = document.querySelector(".output-container");
-const randomMovieButton = document.querySelector(".randomMovie");
-
-//-------------------------------------- Search for movie --------------------------------------//
+//-------------------------------------- Search for movie function --------------------------------------//
 function logSuggestion() {
+    if (!OPENAI_API_KEY) {
+        console.error("API key is not set. Reload the page and provide a key.");
+        return;
+    }
+
     const inputValue = document.querySelector("#searchbar").value;
+    if (!inputValue.trim()) {
+        console.error("Search input is empty. Please enter a movie name.");
+        return;
+    }
+
     fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -65,23 +62,32 @@ function logSuggestion() {
     })
         .then(response => response.json())
         .then(suggestionData => {
-            // Now that suggestionData is available, create the new paragraph
+            // ---------------- create the new paragraph----------------//
             if (suggestionData && suggestionData.choices && suggestionData.choices.length > 0) {
                 const newParagraph = document.createElement("p");
                 newParagraph.className = "generated-paragraph";
                 newParagraph.textContent = suggestionData.choices[0].message.content;  // Extracting AI's response
-                outputContainer.appendChild(newParagraph);// Appending paragraph to the body (or another element of your choice)
+                outputContainer.appendChild(newParagraph); // Append paragraph to output container
                 console.log("Response from AI:", suggestionData.choices[0].message.content);
             } else {
-                console.error("Error in response data:", suggestionData);
+                console.error("Error: No valid response from AI.");
             }
         })
         .catch(error => console.error('Error:', error));  // Error handling
-
 }
 
-//-------------------------------------- Random Movie Button --------------------------------------//
+//-------------------------------- Search Movie Button --------------------------------------//
+searchMovieButton.addEventListener("click", () => {
+    logSuggestion(); // Call the logSuggestion function when searchMovieButton is clicked
+});
+
+//-------------------------------- Random Movie Button --------------------------------------//
 randomMovieButton.addEventListener("click", () => {
+    if (!OPENAI_API_KEY) {
+        console.error("API key is not set. Reload the page and provide a key.");
+        return;
+    }
+
     fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -92,7 +98,7 @@ randomMovieButton.addEventListener("click", () => {
             model: 'gpt-4o-mini',
             messages: [{
                 role: 'user',
-                content: `Give me a random movie of the imdb list top 100 and the camera that is used. Only log title name and camera name + lens that is used`
+                content: `Give me a new random movie of the imdb list top 100 and the camera that is used. Only log title name and camera name + lens that is used`
             }],
             temperature: 0.7,  // Optional: Controls randomness of responses
             max_tokens: 150
@@ -100,11 +106,12 @@ randomMovieButton.addEventListener("click", () => {
     })
         .then(response => response.json())
         .then(suggestionData => {
-            // Now that suggestionData is available, create the new paragraph
+            // ------------ Create the new paragraph----------//
             if (suggestionData && suggestionData.choices && suggestionData.choices.length > 0) {
                 const newParagraph = document.createElement("p");
+                newParagraph.className = "generated-paragraph";
                 newParagraph.textContent = suggestionData.choices[0].message.content;  // Extracting AI's response
-                document.body.appendChild(newParagraph);  // Appending paragraph to the body (or another element of your choice)
+                outputContainer.appendChild(newParagraph);  // Append paragraph to the output container
                 console.log("Response from AI:", suggestionData.choices[0].message.content);
             } else {
                 console.error("Error in response data:", suggestionData);
@@ -112,15 +119,3 @@ randomMovieButton.addEventListener("click", () => {
         })
         .catch(error => console.error('Error:', error));  // Error handling
 });
-
-
-// Attach the function to the button
-function getSuggestions() {
-    logSuggestion();  // Call the logSuggestion function when the button is clicked
-}
-
-// Adding a button for resetting the API key in the UI
-const resetButton = document.createElement("button");
-resetButton.textContent = "Reset API Key";
-resetButton.addEventListener("click", resetApiKey);
-document.body.appendChild(resetButton);
